@@ -2,6 +2,7 @@ import config
 import init
 import telebot
 from telebot import types
+import time
 bot = telebot.TeleBot(config.token)
 
 customer = init.Customer('None', [], [])
@@ -20,8 +21,6 @@ def test(mes):
     bot.send_message(mes.chat.id, customer.name)
 
 
-
-
 @bot.message_handler(commands=['start'])
 def start(message):
     msg = bot.send_message(message.chat.id, 'Привет!\nЯ тестовый бот.\n1 - Юрий\n2 - Глеб')
@@ -36,7 +35,7 @@ def auth(message):
         return
     else:
         global customer
-        customer = init.customers.get(int(identifer),init.Customer('None', [], []))
+        customer = init.customers.get(int(identifer), init.Customer('None', [], []))
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
         if customer.name == 'None':
             msg = bot.send_message(message.chat.id, 'Пользователь не найден, попробуйте еще раз')
@@ -67,18 +66,19 @@ def control(message):
         msg = bot.send_message(message.chat.id, 'Что нужно сделать с интернетом?', reply_markup=markup)
         bot.register_next_step_handler(msg, internet)
     elif message.text == 'Интернет Yota':
-        msg = bot.send_message(message.chat.id, 'Тут наука бессильна')
+        bot.send_message(message.chat.id, 'Тут наука бессильна')
         restart(message)
 
 
 def internet(message):
     if message.text == 'Сделать быстрее':
-        msg = bot.send_message(message.chat.id, 'Теперь он стоит 10000$ в месяц')
+        bot.send_message(message.chat.id, 'Теперь он стоит 10000$ в месяц')
         restart(message)
     if message.text == 'Сделать дешевле':
         bot.send_message(message.chat.id, 'time out error')
-        msg = bot.send_message(message.chat.id, 'Ладно ладно, шутка это')
+        bot.send_message(message.chat.id, 'Ладно ладно, шутка это')
         restart(message)
+
 
 def smart_house(message):
     if message.text == 'Термостат':
@@ -95,10 +95,10 @@ def smart_house(message):
 
 def thermo(message):
     if message.text == 'Сделать жарко':
-        msg = bot.send_message(message.chat.id, 'Теперь дома тепло')
+        bot.send_message(message.chat.id, 'Теперь дома тепло')
         restart(message)
     elif message.text == 'Давай похолоднее':
-        msg = bot.send_message(message.chat.id, 'Дома арктическая свежесть и прохлада')
+        bot.send_message(message.chat.id, 'Дома арктическая свежесть и прохлада')
         restart(message)
     else:
         bot.send_message(message.chat.id, 'Где то ошибка((')
@@ -111,10 +111,10 @@ def thermo(message):
 def light(message):
     if message.text == 'Ярче':
         bot.send_message(message.chat.id, 'Свет включен')
-        msg = bot.send_message(message.chat.id, 'Но вообще я пока не умею этого')
+        bot.send_message(message.chat.id, 'Но вообще я пока не умею этого')
         restart(message)
     elif message.text == 'Темнее':
-        msg = bot.send_message(message.chat.id, 'Готово!')
+        bot.send_message(message.chat.id, 'Готово!')
         restart(message)
     else:
         bot.send_message(message.chat.id, 'Где то ошибка((')
@@ -124,14 +124,17 @@ def light(message):
         bot.register_next_step_handler(msg, light)
 
 
-
+def loop():
+    try:
+        bot.polling(none_stop=True)
+    except Exception:
+        print('Save me!')
+        time.sleep(10)
+        loop()
 
 
 def probation(message):
-    msg = bot.send_message(message.chat.id, 'Спасибо!)')
+    bot.send_message(message.chat.id, 'Спасибо!)')
     restart(message)
 
-try:
-    bot.polling(none_stop=True)
-except Exception:
-    print('e')
+loop()
