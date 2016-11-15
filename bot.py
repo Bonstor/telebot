@@ -6,10 +6,20 @@ bot = telebot.TeleBot(config.token)
 
 customer = init.Customer('None', [], [])
 
+
+def restart(message):
+    markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
+    for s in customer.services:
+        markup.add(s)
+    msg = bot.send_message(message.chat.id, 'Что нибудь еще?', reply_markup=markup)
+    bot.register_next_step_handler(msg, control)
+
+
 @bot.message_handler(commands=['start'])
 def start(message):
     msg = bot.send_message(message.chat.id, 'Привет!\nЯ тестовый бот.\n1 - Юрий\n2 - Глеб')
     bot.register_next_step_handler(msg, auth)
+
 
 def auth(message):
     identifer = message.text
@@ -55,10 +65,12 @@ def control(message):
 
 def internet(message):
     if message.text == 'Сделать быстрее':
-        bot.send_message(message.chat.id, 'Теперь он стоит 10000$ в месяц')
+        msg = bot.send_message(message.chat.id, 'Теперь он стоит 10000$ в месяц')
+        bot.register_next_step_handler(msg, restart)
     if message.text == 'Сделать дешевле':
         bot.send_message(message.chat.id, 'time out error')
-        bot.send_message(message.chat.id, 'Ладно ладно, шутка это')
+        msg = bot.send_message(message.chat.id, 'Ладно ладно, шутка это')
+        bot.register_next_step_handler(msg, restart)
 
 def smart_house(message):
     if message.text == 'Термостат':
@@ -75,9 +87,11 @@ def smart_house(message):
 
 def thermo(message):
     if message.text == 'Сделать жарко':
-        bot.send_message(message.chat.id, 'Теперь дома тепло')
+        msg = bot.send_message(message.chat.id, 'Теперь дома тепло')
+        bot.register_next_step_handler(msg, restart)
     elif message.text == 'Давай похолоднее':
-        bot.send_message(message.chat.id, 'Дома арктическая свежесть и прохлада')
+        msg = bot.send_message(message.chat.id, 'Дома арктическая свежесть и прохлада')
+        bot.register_next_step_handler(msg, restart)
     else:
         bot.send_message(message.chat.id, 'Где то ошибка((')
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
@@ -89,9 +103,11 @@ def thermo(message):
 def light(message):
     if message.text == 'Ярче':
         bot.send_message(message.chat.id, 'Свет включен')
-        bot.send_message(message.chat.id, 'Но вообще я пока не умею этого')
+        msg = bot.send_message(message.chat.id, 'Но вообще я пока не умею этого')
+        bot.register_next_step_handler(msg, restart)
     elif message.text == 'Темнее':
-        bot.send_message(message.chat.id, 'Готово!')
+        msg = bot.send_message(message.chat.id, 'Готово!')
+        bot.register_next_step_handler(msg, restart)
     else:
         bot.send_message(message.chat.id, 'Где то ошибка((')
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
@@ -101,6 +117,10 @@ def light(message):
 
 
 def probation(message):
-    bot.send_message(message.chat.id, 'Спасибо!)')
+    msg = bot.send_message(message.chat.id, 'Спасибо!)')
+    bot.register_next_step_handler(msg, restart)
 
-bot.polling(none_stop=True)
+try:
+    bot.polling(none_stop=True)
+except Exception:
+    print('e')
