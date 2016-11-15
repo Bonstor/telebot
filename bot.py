@@ -66,11 +66,11 @@ def control(message):
 def internet(message):
     if message.text == 'Сделать быстрее':
         msg = bot.send_message(message.chat.id, 'Теперь он стоит 10000$ в месяц')
-        bot.register_next_step_handler(msg, restart)
+        restart(message)
     if message.text == 'Сделать дешевле':
         bot.send_message(message.chat.id, 'time out error')
         msg = bot.send_message(message.chat.id, 'Ладно ладно, шутка это')
-        bot.register_next_step_handler(msg, restart)
+        restart(message)
 
 def smart_house(message):
     if message.text == 'Термостат':
@@ -88,10 +88,10 @@ def smart_house(message):
 def thermo(message):
     if message.text == 'Сделать жарко':
         msg = bot.send_message(message.chat.id, 'Теперь дома тепло')
-        bot.register_next_step_handler(msg, restart)
+        restart(message)
     elif message.text == 'Давай похолоднее':
         msg = bot.send_message(message.chat.id, 'Дома арктическая свежесть и прохлада')
-        bot.register_next_step_handler(msg, restart)
+        restart(message)
     else:
         bot.send_message(message.chat.id, 'Где то ошибка((')
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
@@ -104,10 +104,10 @@ def light(message):
     if message.text == 'Ярче':
         bot.send_message(message.chat.id, 'Свет включен')
         msg = bot.send_message(message.chat.id, 'Но вообще я пока не умею этого')
-        bot.register_next_step_handler(msg, restart)
+        restart(message)
     elif message.text == 'Темнее':
         msg = bot.send_message(message.chat.id, 'Готово!')
-        bot.register_next_step_handler(msg, restart)
+        restart(message)
     else:
         bot.send_message(message.chat.id, 'Где то ошибка((')
         markup = types.ReplyKeyboardMarkup(one_time_keyboard=True)
@@ -118,7 +118,7 @@ def light(message):
 
 def probation(message):
     msg = bot.send_message(message.chat.id, 'Спасибо!)')
-    bot.register_next_step_handler(msg, restart)
+    restart(message)
 
 try:
     bot.polling(none_stop=True)
