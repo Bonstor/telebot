@@ -15,6 +15,13 @@ def restart(message):
     bot.register_next_step_handler(msg, control)
 
 
+@bot.message_handler(commands=['test'])
+def test(mes):
+    bot.send_message(mes.chat.id, customer.name)
+
+
+
+
 @bot.message_handler(commands=['start'])
 def start(message):
     msg = bot.send_message(message.chat.id, 'Привет!\nЯ тестовый бот.\n1 - Юрий\n2 - Глеб')
@@ -61,6 +68,7 @@ def control(message):
         bot.register_next_step_handler(msg, internet)
     elif message.text == 'Интернет Yota':
         msg = bot.send_message(message.chat.id, 'Тут наука бессильна')
+        restart(message)
 
 
 def internet(message):
@@ -114,6 +122,9 @@ def light(message):
         markup.add('Ярче', 'Темнее')
         msg = bot.send_message(message.chat.id, 'Что прикажете?', reply_markup=markup)
         bot.register_next_step_handler(msg, light)
+
+
+
 
 
 def probation(message):
